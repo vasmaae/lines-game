@@ -48,6 +48,7 @@ public partial class FormGame : Form
 
         pictureBoxGame.Image = bmpGame;
         pictureBoxNextStep.Image = bmpNextStep;
+        labelCountOfPoints.Text = game.Points.ToString();
     }
 
     private void ButtonNewGame_Click(object sender, EventArgs e)

@@ -1,18 +1,20 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace IntroductoryEducationalPractice;
+﻿namespace IntroductoryEducationalPractice;
 
 public class Game
 {
+    private Random random;
+
     private List<Position> _availablePositions;
 
     private int[,] _fieldBalls;
     private int[] _nextStepBalls;
+    private int _points;
 
-    private Random random;
+    public int Points => _points;
 
     public Game()
     {
+        _points = 0;
         random = new();
 
         _availablePositions = new();
@@ -38,6 +40,8 @@ public class Game
         int index;
         Position position;
 
+        DeleteSeries();
+
         for (int i = 0; i < _nextStepBalls.Length; i++)
         {
             index = random.Next(0, _availablePositions.Count);
@@ -46,6 +50,66 @@ public class Game
 
             _availablePositions.RemoveAt(index);
             _nextStepBalls[i] = random.Next(1, 7);
+        }
+    }
+
+    private void DeleteSeries()
+    {
+        int counter;
+        int currentRangeStartIndex;
+
+        for (int i = 0; i < _fieldBalls.GetLength(0); i++)
+        {
+            counter = 0;
+            currentRangeStartIndex = 0;
+
+            for (int j = 0; j < _fieldBalls.GetLength(1); j++)
+            {
+                if (_fieldBalls[i, currentRangeStartIndex] == _fieldBalls[i, j]) counter++;
+                else if (_fieldBalls[i, currentRangeStartIndex] != _fieldBalls[i, j] && counter >= 5) break;
+                else
+                {
+                    counter = 1;
+                    currentRangeStartIndex = j;
+                }
+            }
+
+            if (_fieldBalls[i, currentRangeStartIndex] != 0 && counter >= 5)
+            {
+                for (int j = currentRangeStartIndex; j < currentRangeStartIndex + counter; j++)
+                {
+                    _availablePositions.Add(new Position(i, j));
+                    _fieldBalls[i, j] = 0;
+                }
+                _points += counter * 2;
+            }
+        }
+
+        for (int j = 0; j < _fieldBalls.GetLength(1); j++)
+        {
+            counter = 0;
+            currentRangeStartIndex = 0;
+
+            for (int i = 0; i < _fieldBalls.GetLength(0); i++)
+            {
+                if (_fieldBalls[currentRangeStartIndex, j] == _fieldBalls[i, j]) counter++;
+                else if (_fieldBalls[currentRangeStartIndex, j] != _fieldBalls[i, j] && counter >= 5) break;
+                else
+                {
+                    counter = 1;
+                    currentRangeStartIndex = i;
+                }
+            }
+
+            if (_fieldBalls[currentRangeStartIndex, j] != 0 && counter >= 5)
+            {
+                for (int i = currentRangeStartIndex; i < currentRangeStartIndex + counter; i++)
+                {
+                    _availablePositions.Add(new Position(i, j));
+                    _fieldBalls[i, j] = 0;
+                }
+                _points += counter * 2;
+            }
         }
     }
 
@@ -96,7 +160,7 @@ public class Game
         Queue<(int, int)> queue = new Queue<(int, int)>();
         queue.Enqueue(start);
 
-        maze[start.Item1, start.Item2] = -1; 
+        maze[start.Item1, start.Item2] = -1;
 
         int[] moveX = { 0, 0, 1, -1 };
         int[] moveY = { 1, -1, 0, 0 };
@@ -110,7 +174,7 @@ public class Game
                 int nextX = current.Item1 + moveX[i];
                 int nextY = current.Item2 + moveY[i];
 
-                if ( nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols && maze[nextX, nextY] == 0)
+                if (nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols && maze[nextX, nextY] == 0)
                 {
                     if (nextX == finish.Item1 && nextY == finish.Item2)
                         return true;
