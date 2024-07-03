@@ -64,6 +64,7 @@
             buttonNewGame.TabIndex = 86;
             buttonNewGame.Text = "Новая игра";
             buttonNewGame.UseVisualStyleBackColor = true;
+            buttonNewGame.Click += ButtonNewGame_Click;
             // 
             // pictureBoxGame
             // 
@@ -72,7 +73,7 @@
             pictureBoxGame.Size = new Size(541, 541);
             pictureBoxGame.TabIndex = 87;
             pictureBoxGame.TabStop = false;
-            pictureBoxGame.Click += PictureBoxGame_Click;
+            pictureBoxGame.MouseClick += PictureBoxGame_Click;
             // 
             // pictureBoxNextStep
             // 

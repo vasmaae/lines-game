@@ -4,17 +4,43 @@ public partial class FormGame : Form
 {
     private Game game;
 
+    private bool isSelected = false;
+    private (int, int) selectedBall;
+
     public FormGame()
     {
         InitializeComponent();
         game = new();
+        Render();
     }
 
-    private void PictureBoxGame_Click(object sender, EventArgs e)
+    private void PictureBoxGame_Click(object sender, MouseEventArgs e)
+    {
+        (int, int) position = (e.X / 60, e.Y / 60);
+
+        if (isSelected && !game.IsBall(position) && selectedBall != position)
+        {
+            if (game.ReplaceBall(selectedBall, position))
+                game.GenerateBalls();
+            isSelected = false;
+        }
+        else if (!isSelected && game.IsBall(position))
+        {
+            selectedBall = position;
+            isSelected = true;
+        }
+        else if (isSelected && game.IsBall(position))
+        {
+            isSelected = false;
+        }
+        Render();
+    }
+
+    private void Render()
     {
         Bitmap bmpGame = new(pictureBoxGame.Width, pictureBoxGame.Height);
         Graphics gGame = Graphics.FromImage(bmpGame);
-        game.RenderGame(gGame);
+        game.RenderGame(gGame, isSelected, selectedBall);
 
         Bitmap bmpNextStep = new(pictureBoxNextStep.Width, pictureBoxNextStep.Height);
         Graphics gNextStep = Graphics.FromImage(bmpNextStep);
@@ -22,5 +48,11 @@ public partial class FormGame : Form
 
         pictureBoxGame.Image = bmpGame;
         pictureBoxNextStep.Image = bmpNextStep;
+    }
+
+    private void ButtonNewGame_Click(object sender, EventArgs e)
+    {
+        game = new();
+        Render();
     }
 }
