@@ -30,10 +30,13 @@ public partial class FormGame : Form
             isSelected = true;
         }
         else if (isSelected && game.IsBall(position))
-        {
             isSelected = false;
-        }
+        
         Render();
+
+        if (game.CountOfAvailablePositions < 3)
+            MessageBox.Show("Вы проиграли:(\nНачините заново с помощью кнопки \"Новая Игра\"", "Проигрыш", MessageBoxButtons.OK, MessageBoxIcon.Question);
+
     }
 
     private void Render()

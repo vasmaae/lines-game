@@ -11,6 +11,7 @@ public class Game
     private int _points;
 
     public int Points => _points;
+    public int CountOfAvailablePositions => _availablePositions.Count;
 
     public Game()
     {
@@ -37,6 +38,8 @@ public class Game
 
     public void GenerateBalls()
     {
+        if (_availablePositions.Count < _nextStepBalls.Length) return;
+
         int index;
         Position position;
 
